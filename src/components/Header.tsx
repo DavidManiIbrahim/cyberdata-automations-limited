@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X, GraduationCap, User, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -48,16 +57,41 @@ const Header = () => {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/login">
-              <Button variant="ghost" size="sm">
-                Login
-              </Button>
-            </Link>
-            <Link to="/enroll">
-              <Button variant="hero" size="sm">
-                Enroll Now
-              </Button>
-            </Link>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    {user.user_metadata?.full_name || user.email}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <div className="font-medium">
+                      {user.user_metadata?.full_name || user.email}
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/enroll">
+                  <Button variant="hero" size="sm">
+                    Enroll Now
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -90,16 +124,38 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" size="sm" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/enroll" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" size="sm" className="w-full">
-                    Enroll Now
-                  </Button>
-                </Link>
+                {user ? (
+                  <>
+                    <div className="text-sm font-medium text-foreground px-3 py-2">
+                      {user.user_metadata?.full_name || user.email}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start" 
+                      onClick={() => {
+                        signOut();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/enroll" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="hero" size="sm" className="w-full">
+                        Enroll Now
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>
