@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   LogIn,
   Mail,
@@ -28,6 +29,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState<"user" | "admin">("user");
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
 
@@ -54,7 +56,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await signUp(email, password, fullName);
+      await signUp(email, password, fullName, role);
       // User will need to verify email before they can sign in
     } catch (error) {
       console.error("Sign up error:", error);
@@ -192,6 +194,30 @@ const Login = () => {
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
                         </div>
+                      </div>
+
+                      <div>
+                        <Label>Account Type</Label>
+                        <RadioGroup
+                          value={role}
+                          onValueChange={(value) => setRole(value as "user" | "admin")}
+                          className="flex flex-row gap-6 mt-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="user" id="student" />
+                            <Label htmlFor="student" className="flex items-center gap-2 cursor-pointer">
+                              <GraduationCap className="h-4 w-4 text-primary" />
+                              Student
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="admin" id="admin" />
+                            <Label htmlFor="admin" className="flex items-center gap-2 cursor-pointer">
+                              <Shield className="h-4 w-4 text-accent" />
+                              Admin
+                            </Label>
+                          </div>
+                        </RadioGroup>
                       </div>
 
                       <Button type="submit" size="lg" variant="hero" className="w-full" disabled={loading}>

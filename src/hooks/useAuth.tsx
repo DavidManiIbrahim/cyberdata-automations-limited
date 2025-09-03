@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string, fullName: string) => Promise<void>
+  signUp: (email: string, password: string, fullName: string, role?: "user" | "admin") => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
 }
@@ -47,14 +47,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+  const signUp = async (email: string, password: string, fullName: string, role: "user" | "admin" = "user") => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
         },
+        emailRedirectTo: `${window.location.origin}/`,
       },
     })
 
@@ -66,6 +67,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
       throw error
     } else {
+      // If user is created and role is admin, add admin role
+      if (data.user && role === "admin") {
+        setTimeout(async () => {
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: data.user.id,
+              role: 'admin'
+            });
+          
+          if (roleError) {
+            console.error('Error assigning admin role:', roleError);
+          }
+        }, 100);
+      }
+
       toast({
         title: "Success",
         description: "Account created successfully! Please check your email to verify your account.",
