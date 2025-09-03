@@ -4,7 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import Courses from "./pages/Courses";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -31,6 +34,19 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/enroll" element={<Enroll />} />
             <Route path="/login" element={<Login />} />
+            
+            {/* Protected Dashboard Routes */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="profile" element={<Profile />} />
+            </Route>
+            
+            {/* Alternative routes without layout */}
+            <Route path="/profile" element={<DashboardLayout />}>
+              <Route index element={<Profile />} />
+            </Route>
+
+            {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />

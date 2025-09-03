@@ -35,7 +35,7 @@ const Login = () => {
 
   // Redirect if already logged in
   if (user) {
-    navigate("/");
+    navigate("/dashboard");
     return null;
   }
 
@@ -44,7 +44,7 @@ const Login = () => {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {
