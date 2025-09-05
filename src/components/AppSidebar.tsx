@@ -32,18 +32,16 @@ export function AppSidebar() {
 
   const mainItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { title: "Courses", url: "/courses", icon: BookOpen },
     { title: "Profile", url: "/profile", icon: User },
-  ];
-
-  const recommendedItems = [
     { title: "Certificates", url: "/certificates", icon: Trophy },
-    { title: "About", url: "/about", icon: FileText },
-    { title: "Contact", url: "/contact", icon: Phone },
   ];
+  
+
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted/50";
+    isActive 
+      ? "bg-primary text-primary font-medium" 
+      : "text-foreground hover:bg-muted/50";
 
   const handleSignOut = async () => {
     try {
@@ -58,13 +56,13 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Main</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
+                  <SidebarMenuButton asChild className="w-full">
+                    <NavLink to={item.url} className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${getNavCls}`}>
                       <item.icon className="h-4 w-4" />
                       {state !== "collapsed" && <span>{item.title}</span>}
                     </NavLink>
@@ -75,35 +73,17 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Recommended Pages */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Recommended</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {recommendedItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {state !== "collapsed" && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
+       
         {/* User Actions */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild className="w-full">
                   <Button
                     variant="ghost"
                     onClick={handleSignOut}
-                    className="w-full justify-start"
+                    className="w-full justify-start text-foreground hover:bg-muted/50"
                   >
                     <LogOut className="h-4 w-4" />
                     {state !== "collapsed" && <span>Sign Out</span>}
