@@ -8,6 +8,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Certificates from "./pages/Certificates";
 import Courses from "./pages/Courses";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -44,6 +45,10 @@ const App = () => (
             {/* Alternative routes without layout */}
             <Route path="/profile" element={<DashboardLayout />}>
               <Route index element={<Profile />} />
+            </Route>
+
+            <Route path="/certificates" element={<DashboardLayout />}>
+              <Route index element={<Certificates />} />
             </Route>
 
             {/* Admin Routes */}
