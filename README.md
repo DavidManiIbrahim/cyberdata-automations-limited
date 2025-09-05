@@ -1,10 +1,34 @@
-# Welcome to your Lovable project
+# CyberData Automations Learning Management System
 
-## Project info
+## Overview
 
-**URL**: https://lovable.dev/projects/aa8a9d72-9e36-4468-ac80-d5449f851895
+This is a comprehensive Learning Management System (LMS) built with modern web technologies. The platform offers both student and administrative functionalities, providing a robust environment for online learning and course management.
 
-## How can I edit this code?
+## Features
+
+### Student Features
+- **User Authentication**: Secure login and user management system
+- **Dashboard**: Personalized dashboard showing enrolled courses and progress
+- **Course Access**: Browse and access available courses
+- **Profile Management**: Update and manage personal profile information
+- **Certificates**: View and download earned certificates
+- **Course Enrollment**: Easy enrollment process for new courses
+
+### Administrative Features
+- **Admin Dashboard**: Comprehensive overview of system statistics including:
+  - Total user count
+  - Course enrollment statistics
+  - Submission tracking
+  - New user registrations
+  - Pending certificates
+- **User Management**: Manage student accounts and access levels
+- **Certificate Management**: Issue and manage student certificates
+- **Analytics**: Track platform usage and student progress
+- **Course Management**: Add, edit, and manage course content
+
+## Technology Stack
+
+This project is built with modern technologies for optimal performance and scalability:
 
 There are several ways of editing your application.
 
@@ -52,22 +76,91 @@ npm run dev
 
 ## What technologies are used for this project?
 
-This project is built with:
+- **Frontend**:
+  - React (with TypeScript)
+  - Vite (Build tool)
+  - Tailwind CSS (Styling)
+  - shadcn/ui (UI Components)
+  - Tanstack Query (Data fetching)
+  - React Router (Navigation)
+- **Backend**:
+  - Supabase (Backend as a Service)
+  - PostgreSQL (Database)
+- **Authentication**:
+  - Supabase Auth
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Getting Started
 
-## How can I deploy this project?
+### Prerequisites
+- Node.js 18+ & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Git for version control
+- Supabase account (for backend services)
 
-Simply open [Lovable](https://lovable.dev/projects/aa8a9d72-9e36-4468-ac80-d5449f851895) and click on Share -> Publish.
+### Installation
 
-## Can I connect a custom domain to my Lovable project?
+1. **Clone the repository**:
+```sh
+git clone https://github.com/DavidManiIbrahim/cyberdata-automations-limited.git
+cd cyberdata-automations-limited
+```
 
-Yes, you can!
+2. **Install dependencies**:
+```sh
+npm install
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+3. **Set up environment variables**:
+Create a `.env` file in the root directory with the following variables:
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+4. **Supabase Setup**:
+   - Create a new project in Supabase
+   - Run the migration scripts located in `supabase/migrations/` to set up your database schema
+   - Enable authentication in your Supabase project settings
+   - Configure email authentication provider
+   - Copy the project URL and publishable key from your Supabase project settings to your `.env` file
+
+5. **Development Server**:
+```sh
+# Start the development server
+npm run dev
+
+# Run linting
+npm run lint
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+The development server will be available at `http://localhost:5173`
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Create production build
+- `npm run build:dev` - Create development build
+- `npm run lint` - Run ESLint for code quality
+- `npm run preview` - Preview production build locally
+
+### Environment Setup Notes
+- Ensure all environment variables are properly set before starting the application
+- The Supabase project must have the correct database schema and tables
+- Authentication must be properly configured in Supabase
+- For local development, make sure ports 5173 (Vite) are available
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
