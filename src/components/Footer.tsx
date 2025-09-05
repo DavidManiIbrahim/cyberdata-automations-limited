@@ -92,9 +92,8 @@ const Footer = () => {
               ].map(({ icon: Icon, label }) => (
                 <Button
                   key={label}
-                  variant="outline"
+                  variant="hero-outline"
                   size="icon"
-                  className="border-white/20 text-white hover:bg-white hover:text-primary"
                 >
                   <Icon className="h-4 w-4" />
                 </Button>

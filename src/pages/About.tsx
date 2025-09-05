@@ -287,7 +287,7 @@ const About = () => {
                 </Button>
               </Link>
               <Link to="/enroll">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="hero-outline" className="w-full sm:w-auto">
                   Start Your Journey
                 </Button>
               </Link>

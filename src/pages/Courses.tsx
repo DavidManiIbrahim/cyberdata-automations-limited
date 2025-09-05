@@ -211,7 +211,7 @@ const Courses = () => {
                 </Button>
               </Link>
               <Link to="/contact">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="hero-outline">
                   Need Guidance?
                 </Button>
               </Link>
@@ -364,7 +364,7 @@ const Courses = () => {
                 </Button>
               </Link>
               <Link to="/contact">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="hero-outline" className="w-full sm:w-auto">
                   Speak to an Advisor
                 </Button>
               </Link>
