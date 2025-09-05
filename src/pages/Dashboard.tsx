@@ -301,12 +301,14 @@ const Dashboard = () => {
                 </div>
               </Button>
             </Link>
-            <Button variant="outline" className="w-full h-16" disabled>
-              <div className="text-center">
-                <Award className="h-6 w-6 mx-auto mb-1" />
-                <div className="text-sm">View Certificates</div>
-              </div>
-            </Button>
+            <Link to="/certificates">
+              <Button variant="outline" className="w-full h-16">
+                <div className="text-center">
+                  <Award className="h-6 w-6 mx-auto mb-1" />
+                  <div className="text-sm">View Certificates</div>
+                </div>
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
