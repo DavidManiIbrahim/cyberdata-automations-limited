@@ -105,7 +105,7 @@ const Index = () => {
                 </Button>
               </Link>
               <Link to="/enroll">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="hero-outline" className="w-full sm:w-auto">
                   <Play className="mr-2 h-5 w-5" />
                   Enroll Today
                 </Button>
