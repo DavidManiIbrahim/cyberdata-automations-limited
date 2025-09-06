@@ -235,7 +235,7 @@ const Contact = () => {
                     <div>
                       <h3 className="text-lg font-semibold mb-2">WhatsApp Support</h3>
                       <p className="text-white/90 mb-3">Get instant responses to your questions</p>
-                      <Button variant="outline" size="sm" className="border-white text-white hover:bg-white hover:text-success">
+                      <Button variant="hero-outline" size="sm">
                         Start Chat
                       </Button>
                     </div>
