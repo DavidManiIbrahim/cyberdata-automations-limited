@@ -1,8 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const NotFound = () => {
   const location = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     console.error(
@@ -11,6 +13,12 @@ const NotFound = () => {
     );
   }, [location.pathname]);
 
+  // If user is logged in, redirect to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // If user is not logged in, show 404 with option to go to landing page
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="text-center">

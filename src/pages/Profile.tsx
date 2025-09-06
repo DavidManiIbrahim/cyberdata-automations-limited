@@ -401,7 +401,7 @@ Contact: admin@cyberdata.com for questions.
         </Card>
 
         {/* Course Enrollment */}
-        <div className="space-y-6">
+         <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -449,11 +449,11 @@ Contact: admin@cyberdata.com for questions.
                     ) : null;
                   })()}
                 </div>
-              )}
+              )} 
 
-              <Separator />
+              <Separator /> 
 
-              <div className="space-y-2">
+               <div className="space-y-2">
                 <Button
                   onClick={downloadRegistrationForm}
                   disabled={!selectedCourse || !profile.full_name}
@@ -467,7 +467,7 @@ Contact: admin@cyberdata.com for questions.
                 </p>
               </div>
             </CardContent>
-          </Card>
+          </Card> 
 
           {/* Account Info */}
           <Card>

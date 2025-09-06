@@ -19,6 +19,8 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminCertificates from "./pages/AdminCertificates";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import NotFound from "./pages/NotFound";
+import CourseEnrollment from "./pages/CourseEnrollment";
+import HomeRoute from "./pages/HomeRoute";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +32,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<HomeRoute />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -50,6 +52,10 @@ const App = () => (
 
             <Route path="/certificates" element={<DashboardLayout />}>
               <Route index element={<Certificates />} />
+            </Route>
+
+            <Route path="/course-enrollment" element={<DashboardLayout />}>
+              <Route index element={<CourseEnrollment />} />
             </Route>
 
             {/* Admin Routes */}

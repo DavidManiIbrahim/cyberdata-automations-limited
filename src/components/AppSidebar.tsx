@@ -34,6 +34,7 @@ export function AppSidebar() {
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "Profile", url: "/profile", icon: User },
     { title: "Certificates", url: "/certificates", icon: Trophy },
+    { title: "Course Enrollment", url: "/course-enrollment", icon: BookOpen },
   ];
   
 
@@ -58,7 +59,7 @@ export function AppSidebar() {
         <SidebarGroup>
           {/* <SidebarGroupLabel>Main</SidebarGroupLabel> */}
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="mt-20">
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild className="w-full">
