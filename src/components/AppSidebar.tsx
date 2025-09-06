@@ -60,7 +60,7 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-foreground">Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
@@ -79,7 +79,7 @@ export function AppSidebar() {
 
         {/* Recommended Pages */}
         <SidebarGroup>
-          <SidebarGroupLabel>Recommended</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-foreground">Recommended</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {recommendedItems.map((item) => (
