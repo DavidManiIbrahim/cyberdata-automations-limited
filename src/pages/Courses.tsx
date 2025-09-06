@@ -211,7 +211,7 @@ const Courses = () => {
                 </Button>
               </Link>
               <Link to="/contact">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="hero-outline">
                   Need Guidance?
                 </Button>
               </Link>
