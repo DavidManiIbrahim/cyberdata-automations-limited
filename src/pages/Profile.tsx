@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -10,12 +12,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import {
   User,
   Mail,
   Phone,
   MapPin,
-  Calendar,
   Download,
   BookOpen,
   CheckCircle,
@@ -28,7 +32,7 @@ interface Profile {
   city: string;
   state: string;
   country: string;
-  date_of_birth: string;
+  date_of_birth: Date | undefined;
 }
 
 interface Course {
@@ -49,7 +53,7 @@ const Profile = () => {
     city: 'Yola',
     state: 'Adamawa',
     country: 'Nigeria',
-    date_of_birth: '',
+    date_of_birth: undefined,
   });
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string>('');
@@ -76,7 +80,7 @@ const Profile = () => {
             city: profileData.city || 'Yola',
             state: profileData.state || 'Adamawa',
             country: profileData.country || 'Nigeria',
-            date_of_birth: profileData.date_of_birth || '',
+            date_of_birth: profileData.date_of_birth ? new Date(profileData.date_of_birth) : undefined,
           });
         }
 
@@ -106,11 +110,22 @@ const Profile = () => {
 
     setUpdating(true);
     try {
+      const profileData = {
+        user_id: user.id,
+        full_name: profile.full_name,
+        phone: profile.phone,
+        address: profile.address,
+        city: profile.city,
+        state: profile.state,
+        country: profile.country,
+        date_of_birth: profile.date_of_birth ? profile.date_of_birth.toISOString().split('T')[0] : null,
+      };
+
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          ...profile,
+        .upsert(profileData, {
+          onConflict: 'user_id',
+          ignoreDuplicates: false
         });
 
       if (error) {
@@ -199,7 +214,7 @@ const Profile = () => {
         fullName: profile.full_name,
         email: user.email,
         phone: profile.phone,
-        dateOfBirth: profile.date_of_birth,
+        dateOfBirth: profile.date_of_birth?.toISOString().split('T')[0] || '',
         address: profile.address,
         city: profile.city,
         state: profile.state,
@@ -343,12 +358,36 @@ Contact: admin@cyberdata.com for questions.
                 </div>
                 <div>
                   <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                  <Input
-                    id="dateOfBirth"
-                    type="date"
-                    value={profile.date_of_birth}
-                    onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !profile.date_of_birth && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {profile.date_of_birth ? (
+                          format(profile.date_of_birth, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={profile.date_of_birth}
+                        onSelect={(date) => setProfile({ ...profile, date_of_birth: date })}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 
