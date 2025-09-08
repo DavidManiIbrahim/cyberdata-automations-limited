@@ -155,63 +155,73 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 animate-fade-in">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here's your learning progress overview.
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Welcome back! 👋
+        </h1>
+        <p className="text-muted-foreground text-lg">
+          Here's your learning progress overview for today.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="shadow-soft hover:shadow-medium transition-all duration-200 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-primary">Total Courses</CardTitle>
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <BookOpen className="h-5 w-5 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{stats.totalCourses}</div>
+            <div className="text-3xl font-bold text-primary mb-1">{stats.totalCourses}</div>
             <p className="text-xs text-muted-foreground">
               Enrolled courses
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-soft hover:shadow-medium transition-all duration-200 bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Courses</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-secondary">Active Courses</CardTitle>
+            <div className="p-2 bg-secondary/10 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-secondary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary">{stats.activeCourses}</div>
+            <div className="text-3xl font-bold text-secondary mb-1">{stats.activeCourses}</div>
             <p className="text-xs text-muted-foreground">
               Currently studying
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-soft hover:shadow-medium transition-all duration-200 bg-gradient-to-br from-success/5 to-success/10 border-success/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-success">Completed</CardTitle>
+            <div className="p-2 bg-success/10 rounded-lg">
+              <Award className="h-5 w-5 text-success" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">{stats.completedCourses}</div>
+            <div className="text-3xl font-bold text-success mb-1">{stats.completedCourses}</div>
             <p className="text-xs text-muted-foreground">
               Courses finished
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-soft hover:shadow-medium transition-all duration-200 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Progress</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-accent">Avg. Progress</CardTitle>
+            <div className="p-2 bg-accent/10 rounded-lg">
+              <Calendar className="h-5 w-5 text-accent" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-accent">{Math.round(stats.totalProgress)}%</div>
+            <div className="text-3xl font-bold text-accent mb-1">{Math.round(stats.totalProgress)}%</div>
             <p className="text-xs text-muted-foreground">
               Overall completion
             </p>
@@ -220,12 +230,13 @@ const Dashboard = () => {
       </div>
 
       {/* My Courses */}
-      <Card>
+      <Card className="shadow-soft">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>My Courses</CardTitle>
-            <Link to="/courses">
-              <Button variant="outline" size="sm">
+            <CardTitle className="text-xl">My Learning Journey</CardTitle>
+            <Link to="/view-courses">
+              <Button variant="outline" size="sm" className="gap-2">
+                <BookOpen className="h-4 w-4" />
                 Browse All Courses
               </Button>
             </Link>
@@ -239,8 +250,11 @@ const Dashboard = () => {
               <p className="text-muted-foreground mb-4">
                 Start your learning journey by enrolling in a course.
               </p>
-              <Link to="/courses">
-                <Button>Browse Courses</Button>
+              <Link to="/view-courses">
+                <Button className="gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Browse Courses
+                </Button>
               </Link>
             </div>
           ) : (
@@ -248,7 +262,7 @@ const Dashboard = () => {
               {enrollments.map((enrollment) => (
                 <div
                   key={enrollment.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex items-center justify-between p-6 border rounded-xl hover:bg-muted/50 transition-all duration-200 hover:shadow-soft bg-background/50"
                 >
                   <div className="flex items-center gap-4">
                     {getStatusIcon(enrollment.status)}
@@ -279,33 +293,33 @@ const Dashboard = () => {
       </Card>
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="shadow-soft">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle className="text-xl">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link to="/profile">
-              <Button variant="outline" className="w-full h-16">
+              <Button variant="outline" className="w-full h-20 hover:shadow-soft transition-all duration-200 hover:scale-105">
                 <div className="text-center">
-                  <Users className="h-6 w-6 mx-auto mb-1" />
-                  <div className="text-sm">Update Profile</div>
+                  <Users className="h-7 w-7 mx-auto mb-2 text-primary" />
+                  <div className="text-sm font-medium">Update Profile</div>
                 </div>
               </Button>
             </Link>
-            <Link to="/courses">
-              <Button variant="outline" className="w-full h-16">
+            <Link to="/view-courses">
+              <Button variant="outline" className="w-full h-20 hover:shadow-soft transition-all duration-200 hover:scale-105">
                 <div className="text-center">
-                  <BookOpen className="h-6 w-6 mx-auto mb-1" />
-                  <div className="text-sm">Browse Courses</div>
+                  <BookOpen className="h-7 w-7 mx-auto mb-2 text-secondary" />
+                  <div className="text-sm font-medium">Browse Courses</div>
                 </div>
               </Button>
             </Link>
             <Link to="/certificates">
-              <Button variant="outline" className="w-full h-16">
+              <Button variant="outline" className="w-full h-20 hover:shadow-soft transition-all duration-200 hover:scale-105">
                 <div className="text-center">
-                  <Award className="h-6 w-6 mx-auto mb-1" />
-                  <div className="text-sm">View Certificates</div>
+                  <Award className="h-7 w-7 mx-auto mb-2 text-success" />
+                  <div className="text-sm font-medium">View Certificates</div>
                 </div>
               </Button>
             </Link>

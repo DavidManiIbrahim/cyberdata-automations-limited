@@ -20,6 +20,9 @@ import {
   LogOut,
   Trophy,
   GraduationCap,
+  ClipboardList,
+  Settings,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,9 +38,10 @@ export function AppSidebar() {
 
   const mainItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "View Courses", url: "/view-courses", icon: BookOpen },
+    { title: "Assignments", url: "/assignments", icon: ClipboardList },
     { title: "Profile", url: "/profile", icon: User },
-    { title: "Certificates", url: "/certificates", icon: Trophy },
-    { title: "Course Enrollment", url: "/course-enrollment", icon: BookOpen },
+    { title: "Settings", url: "/settings", icon: Settings },
   ];
 
   useEffect(() => {
@@ -98,12 +102,12 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Courses Section */}
+        {/* My Learning Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-foreground">Available Courses</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-foreground">My Learning</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {courses.map((course) => (
+              {courses.slice(0, 3).map((course) => (
                 <SidebarMenuItem key={course.id}>
                   <SidebarMenuButton asChild className="w-full">
                     <div className="flex flex-col items-start gap-1 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer">
@@ -127,7 +131,7 @@ export function AppSidebar() {
               {courses.length === 0 && state !== "collapsed" && (
                 <SidebarMenuItem>
                   <div className="px-3 py-2 text-xs text-muted-foreground">
-                    No courses available
+                    No enrolled courses
                   </div>
                 </SidebarMenuItem>
               )}
