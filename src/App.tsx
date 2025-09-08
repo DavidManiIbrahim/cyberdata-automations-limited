@@ -21,7 +21,6 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import NotFound from "./pages/NotFound";
 import ViewCourses from "./pages/ViewCourses";
 import Assignments from "./pages/Assignments";
-import Settings from "./pages/Settings";
 import HomeRoute from "./pages/HomeRoute";
 
 const queryClient = new QueryClient();
@@ -62,10 +61,6 @@ const App = () => (
 
             <Route path="/assignments" element={<DashboardLayout />}>
               <Route index element={<Assignments />} />
-            </Route>
-
-            <Route path="/settings" element={<DashboardLayout />}>
-              <Route index element={<Settings />} />
             </Route>
 
             {/* Admin Routes */}

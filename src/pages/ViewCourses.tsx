@@ -73,11 +73,12 @@ const ViewCourses = () => {
       if (!user) return;
 
       try {
-        // Fetch courses
+        // Fetch courses (excluding specific categories)
         const { data: coursesData, error: coursesError } = await supabase
           .from('courses')
           .select('*')
           .eq('is_active', true)
+          .not('category', 'in', '("Computer Basics","Data Analysis","Graphic Design")')
           .order('title');
 
         if (coursesError) {
