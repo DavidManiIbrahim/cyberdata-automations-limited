@@ -16,8 +16,6 @@ import {
   Phone,
   MapPin,
   GraduationCap,
-  Calendar,
-  CreditCard,
   CheckCircle,
   Clock,
   Award
@@ -35,8 +33,6 @@ const Enroll = () => {
     phone: "",
     address: "",
     course: selectedCourse,
-    schedule: "",
-    paymentMethod: "",
     agreeTerms: false
   });
 
@@ -51,12 +47,6 @@ const Enroll = () => {
     "E-commerce & Online Business"
   ];
 
-  const schedules = [
-    "Morning (9:00 AM - 12:00 PM)",
-    "Afternoon (2:00 PM - 5:00 PM)",
-    "Evening (6:00 PM - 9:00 PM)",
-    "Weekend (Saturday & Sunday)"
-  ];
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
@@ -200,43 +190,6 @@ const Enroll = () => {
                                 {course}
                               </SelectItem>
                             ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="schedule">Preferred Schedule *</Label>
-                        <Select value={formData.schedule} onValueChange={(value) => handleInputChange("schedule", value)}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Choose your preferred time" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {schedules.map((schedule) => (
-                              <SelectItem key={schedule} value={schedule}>
-                                {schedule}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Payment Method */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground flex items-center">
-                        <CreditCard className="mr-2 h-5 w-5 text-primary" />
-                        Payment Preference
-                      </h3>
-                      <div>
-                        <Label htmlFor="paymentMethod">How would you like to pay?</Label>
-                        <Select value={formData.paymentMethod} onValueChange={(value) => handleInputChange("paymentMethod", value)}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select payment method" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="full-upfront">Pay Full Amount Upfront</SelectItem>
-                            <SelectItem value="installments">Pay in Installments</SelectItem>
-                            <SelectItem value="bank-transfer">Bank Transfer</SelectItem>
-                            <SelectItem value="cash">Cash Payment at Center</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

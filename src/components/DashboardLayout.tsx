@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { TopNavigation } from "@/components/TopNavigation";
 
 export function DashboardLayout() {
   const { user, loading } = useAuth();
@@ -21,20 +22,14 @@ export function DashboardLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gradient-card">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="flex items-center justify-between h-full px-4">
-              <SidebarTrigger />
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-muted-foreground">
-                  Welcome, {user.user_metadata?.full_name || user.email}
-                </span>
-              </div>
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto">
+          <div className="flex items-center h-16 px-4 bg-background/95 backdrop-blur border-b">
+            <SidebarTrigger />
+          </div>
+          <TopNavigation />
+          <main className="flex-1 overflow-auto bg-muted/30">
             <Outlet />
           </main>
         </div>

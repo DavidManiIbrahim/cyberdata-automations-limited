@@ -5,7 +5,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,28 +15,24 @@ import {
   BookOpen,
   User,
   LogOut,
-  Trophy,
-  FileText,
-  Phone,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
   
   const currentPath = location.pathname;
   const isActive = (path: string) => currentPath === path;
 
   const mainItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "View Courses", url: "/view-courses", icon: BookOpen },
+    { title: "Assignments", url: "/assignments", icon: ClipboardList },
     { title: "Profile", url: "/profile", icon: User },
-    { title: "Certificates", url: "/certificates", icon: Trophy },
-    { title: "Course Enrollment", url: "/course-enrollment", icon: BookOpen },
   ];
-  
-
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
@@ -74,7 +69,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-       
         {/* User Actions */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>

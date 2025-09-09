@@ -267,8 +267,10 @@ const AdminDashboard = () => {
               <Button 
                 onClick={() => navigate("/admin/users")}
                 className="w-full"
+                size="lg"
               >
-                Manage Users
+                <Users className="mr-2 h-4 w-4" />
+                Manage Users ({stats.totalUsers})
               </Button>
             </CardContent>
           </Card>

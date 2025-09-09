@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { User } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Download,
+  BookOpen,
+  CheckCircle,
+} from "lucide-react";
 
 interface Profile {
   id?: string;
@@ -18,7 +34,7 @@ interface Profile {
   city: string;
   state: string;
   country: string;
-  date_of_birth: string;
+  date_of_birth: Date | undefined;
 }
 
 const Profile = () => {
@@ -33,7 +49,7 @@ const Profile = () => {
     city: 'Yola',
     state: 'Adamawa',
     country: 'Nigeria',
-    date_of_birth: '',  // Initialize as empty string
+    date_of_birth: undefined,
   });
 
   useEffect(() => {
@@ -65,11 +81,19 @@ const Profile = () => {
             city: profileData.city || 'Yola',
             state: profileData.state || 'Adamawa',
             country: profileData.country || 'Nigeria',
-            date_of_birth: profileData.date_of_birth || '',
-          };
-          setProfile(profileToSet);
-          // Save to localStorage
-          localStorage.setItem(`profile_${user.id}`, JSON.stringify(profileToSet));
+            date_of_birth: profileData.date_of_birth ? new Date(profileData.date_of_birth) : undefined,
+          });
+        }
+
+        // Fetch available courses
+        const { data: coursesData, error: coursesError } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('is_active', true)
+          .order('category', { ascending: true });
+
+        if (!coursesError && coursesData) {
+          setCourses(coursesData);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -87,22 +111,22 @@ const Profile = () => {
 
     setUpdating(true);
     try {
-      // Save to localStorage first
-      const updatedProfile = {
-        ...profile,
+      const profileData = {
         user_id: user.id,
+        full_name: profile.full_name,
+        phone: profile.phone,
+        address: profile.address,
+        city: profile.city,
+        state: profile.state,
+        country: profile.country,
+        date_of_birth: profile.date_of_birth ? profile.date_of_birth.toISOString().split('T')[0] : null,
       };
-      localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
 
-      // Then save to Supabase
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: profile.id, // Include the id for existing profiles
-          user_id: user.id,
-          ...profile,
-        }, {
-          onConflict: 'user_id' // This tells Supabase to update based on user_id if it exists
+        .upsert(profileData, {
+          onConflict: 'user_id',
+          ignoreDuplicates: false
         });
 
       if (error) throw error;
@@ -120,6 +144,148 @@ const Profile = () => {
     } finally {
       setUpdating(false);
     }
+  };
+
+  const handleCourseEnrollment = async () => {
+    if (!user || !selectedCourse) return;
+
+    try {
+      // Check if already enrolled
+      const { data: existing } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('course_id', selectedCourse)
+        .maybeSingle();
+
+      if (existing) {
+        toast({
+          title: "Already enrolled",
+          description: "You are already enrolled in this course.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('enrollments')
+        .insert({
+          user_id: user.id,
+          course_id: selectedCourse,
+          status: 'pending',
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: "Course enrollment submitted! Your application is pending approval.",
+      });
+
+      setSelectedCourse('');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to enroll in course",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadRegistrationForm = async () => {
+    if (!user || !selectedCourse) {
+      toast({
+        title: "Missing Information",
+        description: "Please select a course and complete your profile first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const selectedCourseData = courses.find(c => c.id === selectedCourse);
+    if (!selectedCourseData) return;
+
+    // Create registration form data
+    const formData = {
+      personalInfo: {
+        fullName: profile.full_name,
+        email: user.email,
+        phone: profile.phone,
+        dateOfBirth: profile.date_of_birth?.toISOString().split('T')[0] || '',
+        address: profile.address,
+        city: profile.city,
+        state: profile.state,
+        country: profile.country,
+      },
+      courseInfo: {
+        title: selectedCourseData.title,
+        category: selectedCourseData.category,
+        level: selectedCourseData.level,
+        price: selectedCourseData.price,
+      },
+      applicationDate: new Date().toISOString().split('T')[0],
+    };
+
+    // Create a simple text-based registration form
+    const formContent = `
+COURSE REGISTRATION FORM
+========================
+
+PERSONAL INFORMATION
+-------------------
+Full Name: ${formData.personalInfo.fullName}
+Email: ${formData.personalInfo.email}
+Phone: ${formData.personalInfo.phone}
+Date of Birth: ${formData.personalInfo.dateOfBirth}
+Address: ${formData.personalInfo.address}
+City: ${formData.personalInfo.city}
+State: ${formData.personalInfo.state}
+Country: ${formData.personalInfo.country}
+
+COURSE INFORMATION
+-----------------
+Course Title: ${formData.courseInfo.title}
+Category: ${formData.courseInfo.category}
+Level: ${formData.courseInfo.level}
+Course Fee: ₦${formData.courseInfo.price.toLocaleString()}
+
+APPLICATION DETAILS
+------------------
+Application Date: ${formData.applicationDate}
+Application ID: REG-${Date.now()}
+
+INSTRUCTIONS
+-----------
+1. Print and sign this form
+2. Attach required documents (ID, passport photo, certificates)
+3. Submit to the admissions office
+4. Pay course fees as directed
+5. Wait for approval confirmation
+
+Thank you for your application!
+Contact: admin@cyberdata.com for questions.
+    `.trim();
+
+    // Create and download the file
+    const blob = new Blob([formContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Registration-Form-${selectedCourseData.title.replace(/\s+/g, '-')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    // Also create the enrollment
+    await handleCourseEnrollment();
+
+    toast({
+      title: "Registration Form Downloaded",
+      description: "Please print, sign, and submit the form as instructed.",
+    });
   };
 
   if (loading) {
@@ -146,16 +312,84 @@ const Profile = () => {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Personal Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleProfileUpdate} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Form */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Personal Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleProfileUpdate} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    value={profile.full_name}
+                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="bg-muted"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    value={profile.phone}
+                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !profile.date_of_birth && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {profile.date_of_birth ? (
+                          format(profile.date_of_birth, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={profile.date_of_birth}
+                        onSelect={(date) => setProfile({ ...profile, date_of_birth: date })}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+
               <div>
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input

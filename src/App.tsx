@@ -19,7 +19,8 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminCertificates from "./pages/AdminCertificates";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import NotFound from "./pages/NotFound";
-import CourseEnrollment from "./pages/CourseEnrollment";
+import ViewCourses from "./pages/ViewCourses";
+import Assignments from "./pages/Assignments";
 import HomeRoute from "./pages/HomeRoute";
 
 const queryClient = new QueryClient();
@@ -54,8 +55,12 @@ const App = () => (
               <Route index element={<Certificates />} />
             </Route>
 
-            <Route path="/course-enrollment" element={<DashboardLayout />}>
-              <Route index element={<CourseEnrollment />} />
+            <Route path="/view-courses" element={<DashboardLayout />}>
+              <Route index element={<ViewCourses />} />
+            </Route>
+
+            <Route path="/assignments" element={<DashboardLayout />}>
+              <Route index element={<Assignments />} />
             </Route>
 
             {/* Admin Routes */}

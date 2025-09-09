@@ -110,9 +110,8 @@ export const CourseEnrollment: React.FC = () => {
       <Button
         onClick={handleEnroll}
         disabled={!selectedCourse || !profile.full_name || loading}
-        isLoading={loading}
       >
-        Enroll
+        {loading ? "Enrolling..." : "Enroll"}
       </Button>
       {!profile.full_name && (
         <div className="text-sm text-destructive">Complete your profile to enroll in a course.</div>
