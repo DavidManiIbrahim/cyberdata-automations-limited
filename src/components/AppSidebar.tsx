@@ -15,7 +15,6 @@ import {
   BookOpen,
   User,
   LogOut,
-  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +29,6 @@ export function AppSidebar() {
   const mainItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "View Courses", url: "/view-courses", icon: BookOpen },
-    { title: "Assignments", url: "/assignments", icon: ClipboardList },
     { title: "Profile", url: "/profile", icon: User },
   ];
 

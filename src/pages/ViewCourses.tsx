@@ -295,36 +295,36 @@ const ViewCourses = () => {
       {enrolledCourses.length > 0 && (
         <div>
           <h2 className="text-2xl font-semibold mb-4">My Learning</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
             {enrolledCourses.map((course) => {
               const enrollment = getEnrollmentStatus(course.id);
               return (
-                <Card key={course.id} className="shadow-soft hover:shadow-medium transition-shadow">
-                  <CardHeader className="pb-3">
+                <Card key={course.id} className="shadow-soft hover:shadow-medium transition-shadow flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="h-5 w-5 text-primary" />
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <BookOpen className="h-5 w-5 text-primary flex-shrink-0" />
                         <Badge variant="outline" className="text-xs">
                           {course.level}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 flex-shrink-0">
                         {enrollment && getStatusIcon(enrollment.status)}
                       </div>
                     </div>
                     <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                  <CardContent className="space-y-4 flex-1 flex flex-col">
+                    <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
                       {course.description}
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                       <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="h-3 w-3 flex-shrink-0" />
                         <span>{course.duration_weeks} weeks</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
+                        <Users className="h-3 w-3 flex-shrink-0" />
                         <span>Instructor</span>
                       </div>
                     </div>
@@ -337,7 +337,7 @@ const ViewCourses = () => {
                         <Progress value={enrollment.progress} className="h-2" />
                       </div>
                     )}
-                    <Button className="w-full" size="sm">
+                    <Button className="w-full mt-auto" size="sm">
                       Continue Learning
                     </Button>
                   </CardContent>
@@ -374,17 +374,17 @@ const ViewCourses = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {filteredCourses.map((course) => {
             const enrollment = getEnrollmentStatus(course.id);
             const isEnrolled = !!enrollment;
 
             return (
-              <Card key={course.id} className="shadow-soft hover:shadow-medium transition-all duration-200 hover:scale-[1.02]">
-                <CardHeader className="pb-3">
+              <Card key={course.id} className="shadow-soft hover:shadow-medium transition-all duration-200 hover:scale-[1.02] flex flex-col">
+                <CardHeader className="pb-3 flex-shrink-0">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <BookOpen className="h-5 w-5 text-primary flex-shrink-0" />
                       <Badge variant="outline" className="text-xs">
                         {course.level}
                       </Badge>
@@ -392,33 +392,33 @@ const ViewCourses = () => {
                         {course.category}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       <Star className="h-4 w-4 text-accent fill-current" />
                       <span className="text-xs text-muted-foreground">4.8</span>
                     </div>
                   </div>
                   <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground line-clamp-3">
+                <CardContent className="space-y-4 flex-1 flex flex-col">
+                  <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
                     {course.description}
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                     <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                      <Clock className="h-3 w-3 flex-shrink-0" />
                       <span>{course.duration_weeks} weeks</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
+                      <Users className="h-3 w-3 flex-shrink-0" />
                       <span>Instructor</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2 mt-auto pt-2">
                     <span className="text-lg font-semibold text-primary">
-                      ${course.price}
+                      ₦{course.price.toLocaleString()}
                     </span>
                     {isEnrolled ? (
-                      <Button variant="outline" size="sm" disabled>
+                      <Button variant="outline" size="sm" disabled className="flex-shrink-0">
                         <CheckCircle className="h-4 w-4 mr-1" />
                         Enrolled
                       </Button>
@@ -427,6 +427,7 @@ const ViewCourses = () => {
                         size="sm" 
                         onClick={() => handleEnroll(course.id)}
                         disabled={!profile}
+                        className="flex-shrink-0"
                       >
                         Enroll Now
                       </Button>

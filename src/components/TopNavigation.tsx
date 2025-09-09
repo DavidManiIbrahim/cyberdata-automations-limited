@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Search, Bell, User, ChevronDown } from "lucide-react";
+import { Bell, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -16,7 +15,6 @@ import { Link } from "react-router-dom";
 
 export function TopNavigation() {
   const { user, signOut } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const userInitials = user?.user_metadata?.full_name
     ?.split(" ")
@@ -35,18 +33,9 @@ export function TopNavigation() {
   return (
     <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="flex items-center justify-between h-full px-6">
-        {/* Left section - Search */}
-        <div className="flex items-center gap-4 flex-1 max-w-md">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search courses, assignments..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/20"
-            />
-          </div>
+        {/* Left section - Logo/Brand */}
+        <div className="flex items-center gap-4">
+          <h2 className="text-lg font-semibold text-primary">CyberData Academy</h2>
         </div>
 
         {/* Right section - User Profile */}
@@ -102,7 +91,7 @@ export function TopNavigation() {
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/dashboard/profile" className="cursor-pointer">
+                <Link to="/profile" className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   Profile Settings
                 </Link>
