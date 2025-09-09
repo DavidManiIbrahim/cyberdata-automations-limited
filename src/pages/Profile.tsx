@@ -9,20 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import {
   User,
   Mail,
-  Phone,
-  MapPin,
-  Download,
-  BookOpen,
-  CheckCircle,
 } from "lucide-react";
 
 interface Profile {
@@ -82,18 +75,9 @@ const Profile = () => {
             state: profileData.state || 'Adamawa',
             country: profileData.country || 'Nigeria',
             date_of_birth: profileData.date_of_birth ? new Date(profileData.date_of_birth) : undefined,
-          });
-        }
-
-        // Fetch available courses
-        const { data: coursesData, error: coursesError } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('is_active', true)
-          .order('category', { ascending: true });
-
-        if (!coursesError && coursesData) {
-          setCourses(coursesData);
+          };
+          setProfile(profileToSet);
+          localStorage.setItem(`profile_${user.id}`, JSON.stringify(profileToSet));
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -131,6 +115,9 @@ const Profile = () => {
 
       if (error) throw error;
 
+      // Update local storage
+      localStorage.setItem(`profile_${user.id}`, JSON.stringify(profile));
+
       toast({
         title: "Success",
         description: "Profile updated successfully!",
@@ -144,148 +131,6 @@ const Profile = () => {
     } finally {
       setUpdating(false);
     }
-  };
-
-  const handleCourseEnrollment = async () => {
-    if (!user || !selectedCourse) return;
-
-    try {
-      // Check if already enrolled
-      const { data: existing } = await supabase
-        .from('enrollments')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('course_id', selectedCourse)
-        .maybeSingle();
-
-      if (existing) {
-        toast({
-          title: "Already enrolled",
-          description: "You are already enrolled in this course.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('enrollments')
-        .insert({
-          user_id: user.id,
-          course_id: selectedCourse,
-          status: 'pending',
-        });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Success",
-        description: "Course enrollment submitted! Your application is pending approval.",
-      });
-
-      setSelectedCourse('');
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to enroll in course",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const downloadRegistrationForm = async () => {
-    if (!user || !selectedCourse) {
-      toast({
-        title: "Missing Information",
-        description: "Please select a course and complete your profile first.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const selectedCourseData = courses.find(c => c.id === selectedCourse);
-    if (!selectedCourseData) return;
-
-    // Create registration form data
-    const formData = {
-      personalInfo: {
-        fullName: profile.full_name,
-        email: user.email,
-        phone: profile.phone,
-        dateOfBirth: profile.date_of_birth?.toISOString().split('T')[0] || '',
-        address: profile.address,
-        city: profile.city,
-        state: profile.state,
-        country: profile.country,
-      },
-      courseInfo: {
-        title: selectedCourseData.title,
-        category: selectedCourseData.category,
-        level: selectedCourseData.level,
-        price: selectedCourseData.price,
-      },
-      applicationDate: new Date().toISOString().split('T')[0],
-    };
-
-    // Create a simple text-based registration form
-    const formContent = `
-COURSE REGISTRATION FORM
-========================
-
-PERSONAL INFORMATION
--------------------
-Full Name: ${formData.personalInfo.fullName}
-Email: ${formData.personalInfo.email}
-Phone: ${formData.personalInfo.phone}
-Date of Birth: ${formData.personalInfo.dateOfBirth}
-Address: ${formData.personalInfo.address}
-City: ${formData.personalInfo.city}
-State: ${formData.personalInfo.state}
-Country: ${formData.personalInfo.country}
-
-COURSE INFORMATION
------------------
-Course Title: ${formData.courseInfo.title}
-Category: ${formData.courseInfo.category}
-Level: ${formData.courseInfo.level}
-Course Fee: ₦${formData.courseInfo.price.toLocaleString()}
-
-APPLICATION DETAILS
-------------------
-Application Date: ${formData.applicationDate}
-Application ID: REG-${Date.now()}
-
-INSTRUCTIONS
------------
-1. Print and sign this form
-2. Attach required documents (ID, passport photo, certificates)
-3. Submit to the admissions office
-4. Pay course fees as directed
-5. Wait for approval confirmation
-
-Thank you for your application!
-Contact: admin@cyberdata.com for questions.
-    `.trim();
-
-    // Create and download the file
-    const blob = new Blob([formContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Registration-Form-${selectedCourseData.title.replace(/\s+/g, '-')}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    // Also create the enrollment
-    await handleCourseEnrollment();
-
-    toast({
-      title: "Registration Form Downloaded",
-      description: "Please print, sign, and submit the form as instructed.",
-    });
   };
 
   if (loading) {
@@ -391,96 +236,81 @@ Contact: admin@cyberdata.com for questions.
               </div>
 
               <div>
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  value={profile.full_name}
-                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                  placeholder="Enter your full name"
-                  required
+                <Label htmlFor="address">Address</Label>
+                <Textarea
+                  id="address"
+                  value={profile.address}
+                  onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+                  placeholder="Enter your address"
+                  rows={3}
                 />
               </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  value={user?.email || ''}
-                  disabled
-                  className="bg-muted"
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  value={profile.phone}
-                  onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                  placeholder="Enter phone number"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    value={profile.city}
+                    onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    value={profile.state}
+                    onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                    placeholder="State"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    value={profile.country}
+                    onChange={(e) => setProfile({ ...profile, country: e.target.value })}
+                    placeholder="Country"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  defaultValue=""
-                  value={profile.date_of_birth || ''}
-                  onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
-                  max={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-            </div>
 
-            <div>
-              <Label htmlFor="address">Address</Label>
-              <Textarea
-                id="address"
-                value={profile.address}
-                onChange={(e) => setProfile({ ...profile, address: e.target.value })}
-                placeholder="Enter your address"
-                rows={3}
-              />
-            </div>
+              <Button type="submit" disabled={updating} className="w-full">
+                {updating ? "Updating..." : "Update Profile"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={profile.city}
-                  onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                  placeholder="City"
-                />
+        {/* Account Summary */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Account Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Email</span>
+                  <Badge variant="outline">{user?.email}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Account Status</span>
+                  <Badge variant="default">Active</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Member Since</span>
+                  <span className="text-sm">{user?.created_at ? format(new Date(user.created_at), 'MMM yyyy') : 'N/A'}</span>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  value={profile.state}
-                  onChange={(e) => setProfile({ ...profile, state: e.target.value })}
-                  placeholder="State"
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  value={profile.country}
-                  onChange={(e) => setProfile({ ...profile, country: e.target.value })}
-                  placeholder="Country"
-                />
-              </div>
-            </div>
-
-            <Button type="submit" disabled={updating} className="w-full">
-              {updating ? "Updating..." : "Update Profile"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
