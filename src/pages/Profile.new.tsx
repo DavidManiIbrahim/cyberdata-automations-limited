@@ -10,8 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucide-react";
 
 interface Profile {
-  id?: string;
-  user_id?: string;
   full_name: string;
   phone: string;
   address: string;
@@ -33,20 +31,12 @@ const Profile = () => {
     city: 'Yola',
     state: 'Adamawa',
     country: 'Nigeria',
-    date_of_birth: '',  // Initialize as empty string
+    date_of_birth: '',
   });
 
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
-
-      // Try to load from localStorage first
-      const savedProfile = localStorage.getItem(`profile_${user.id}`);
-      if (savedProfile) {
-        setProfile(JSON.parse(savedProfile));
-        setLoading(false);
-        return;
-      }
 
       try {
         const { data: profileData, error: profileError } = await supabase
@@ -56,9 +46,7 @@ const Profile = () => {
           .maybeSingle();
 
         if (!profileError && profileData) {
-          const profileToSet = {
-            id: profileData.id,
-            user_id: profileData.user_id,
+          setProfile({
             full_name: profileData.full_name || '',
             phone: profileData.phone || '',
             address: profileData.address || '',
@@ -66,10 +54,7 @@ const Profile = () => {
             state: profileData.state || 'Adamawa',
             country: profileData.country || 'Nigeria',
             date_of_birth: profileData.date_of_birth || '',
-          };
-          setProfile(profileToSet);
-          // Save to localStorage
-          localStorage.setItem(`profile_${user.id}`, JSON.stringify(profileToSet));
+          });
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -87,22 +72,11 @@ const Profile = () => {
 
     setUpdating(true);
     try {
-      // Save to localStorage first
-      const updatedProfile = {
-        ...profile,
-        user_id: user.id,
-      };
-      localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
-
-      // Then save to Supabase
       const { error } = await supabase
         .from('profiles')
         .upsert({
-          id: profile.id, // Include the id for existing profiles
           user_id: user.id,
           ...profile,
-        }, {
-          onConflict: 'user_id' // This tells Supabase to update based on user_id if it exists
         });
 
       if (error) throw error;
@@ -192,10 +166,8 @@ const Profile = () => {
                 <Input
                   id="dateOfBirth"
                   type="date"
-                  defaultValue=""
-                  value={profile.date_of_birth || ''}
+                  value={profile.date_of_birth}
                   onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
-                  max={new Date().toISOString().split('T')[0]}
                 />
               </div>
             </div>
