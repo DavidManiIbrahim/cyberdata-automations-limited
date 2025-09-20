@@ -67,22 +67,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
       throw error
     } else {
-      // If user is created and role is admin, add admin role
+      // If user is created and role is admin, add admin role immediately
       if (data.user && role === "admin") {
-        setTimeout(async () => {
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: data.user.id,
-              role: 'admin'
-            });
-          
-          if (roleError) {
-            console.error('Error assigning admin role:', roleError);
-          }
-        }, 100);
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            role: 'admin'
+          });
+        if (roleError) {
+          toast({
+            title: "Error assigning admin role",
+            description: roleError.message,
+            variant: "destructive",
+          });
+          console.error('Error assigning admin role:', roleError);
+        }
       }
-
       toast({
         title: "Success",
         description: "Account created successfully! Please check your email to verify your account.",

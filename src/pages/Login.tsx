@@ -21,6 +21,7 @@ import {
   User,
   Shield
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const { toast } = useToast();
@@ -44,7 +45,24 @@ const Login = () => {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate("/dashboard");
+      // Fetch user role after sign in
+      const { data: { user: signedInUser } } = await supabase.auth.getUser();
+      if (signedInUser) {
+        const { data: roles, error: rolesError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', signedInUser.id);
+        if (rolesError) {
+          console.error('Error fetching user role:', rolesError);
+          navigate('/dashboard');
+        } else if (roles && roles.some((r: any) => r.role === 'admin')) {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {

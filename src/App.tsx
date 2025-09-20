@@ -21,6 +21,7 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import NotFound from "./pages/NotFound";
 import ViewCourses from "./pages/ViewCourses";
 import HomeRoute from "./pages/HomeRoute";
+import Materials from "./pages/Materials";
 
 const queryClient = new QueryClient();
 
@@ -54,12 +55,16 @@ const App = () => (
               <Route index element={<Certificates />} />
             </Route>
 
+            <Route path="/materials" element={<DashboardLayout />}>
+              <Route index element={<Materials />} />
+            </Route>
+
             <Route path="/view-courses" element={<DashboardLayout />}>
               <Route index element={<ViewCourses />} />
             </Route>
 
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/certificates" element={<AdminCertificates />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />

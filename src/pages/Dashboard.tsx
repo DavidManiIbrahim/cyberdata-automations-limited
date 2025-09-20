@@ -159,7 +159,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          Welcome back! 👋
+          Welcome back! user
         </h1>
         <p className="text-muted-foreground text-lg">
           Here's your learning progress overview for today.
