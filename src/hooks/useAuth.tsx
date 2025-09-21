@@ -67,21 +67,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
       throw error
     } else {
-      // If user is created and role is admin, add admin role immediately
-      if (data.user && role === "admin") {
+      if (data.user) {
+        // Always assign a role on sign up
+        const assignedRole = role || "user";
         const { error: roleError } = await supabase
           .from('user_roles')
           .insert({
             user_id: data.user.id,
-            role: 'admin'
+            role: assignedRole
           });
         if (roleError) {
           toast({
-            title: "Error assigning admin role",
+            title: "Error assigning role",
             description: roleError.message,
             variant: "destructive",
           });
-          console.error('Error assigning admin role:', roleError);
+          console.error('Error assigning role:', roleError);
         }
       }
       toast({

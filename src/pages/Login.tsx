@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,8 +9,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { supabase } from "@/integrations/supabase/client";
 import {
   LogIn,
   Mail,
@@ -21,50 +20,61 @@ import {
   User,
   Shield
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+ 
 
 const Login = () => {
   const { toast } = useToast();
+  const { signIn, signUp, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [role, setRole] = useState<"user" | "admin">("user");
-  const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
-
-  // Redirect if already logged in
-  if (user) {
-    navigate("/dashboard");
-    return null;
-  }
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       await signIn(email, password);
-      // Fetch user role after sign in
+      // Test: fetch user profile from database after login
       const { data: { user: signedInUser } } = await supabase.auth.getUser();
       if (signedInUser) {
-        const { data: roles, error: rolesError } = await supabase
+        // Example: fetch user roles
+        const { data: rolesData, error } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', signedInUser.id);
-        if (rolesError) {
-          console.error('Error fetching user role:', rolesError);
-          navigate('/dashboard');
-        } else if (roles && roles.some((r: any) => r.role === 'admin')) {
-          navigate('/admin/dashboard');
+        if (roles && roles.length > 0) {
+          // Data received from DB
+          toast({
+            title: "Login Success",
+            description: `Roles: ${roles.map(r => r.role).join(", ")}`,
+            variant: "default",
+          });
+          // Redirect based on role
+          if (roles.some((r: any) => r.role === 'admin')) {
+            navigate('/admin/dashboard');
+          } else {
+            navigate('/dashboard');
+          }
         } else {
+          toast({
+            title: "Login Success",
+            description: "No roles found for this user. Redirecting to dashboard...",
+            variant: "default",
+          });
           navigate('/dashboard');
         }
-      } else {
-        navigate('/dashboard');
       }
     } catch (error) {
-      console.error("Sign in error:", error);
+      toast({
+        title: "Sign In Error",
+        description: String(error),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -75,9 +85,17 @@ const Login = () => {
     setLoading(true);
     try {
       await signUp(email, password, fullName, role);
-      // User will need to verify email before they can sign in
+      toast({
+        title: "Sign Up Success",
+        description: "Account created. Please check your email to verify.",
+        variant: "default",
+      });
     } catch (error) {
-      console.error("Sign up error:", error);
+      toast({
+        title: "Sign Up Error",
+        description: String(error),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
