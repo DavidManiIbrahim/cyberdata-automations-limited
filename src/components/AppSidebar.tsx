@@ -1,5 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -17,16 +19,36 @@ import {
   LogOut,
   Award,
   FileText,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const currentPath = location.pathname;
   const isActive = (path: string) => currentPath === path;
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      if (user) {
+        const { data: rolesData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+        
+        if (rolesData && rolesData.some((r: any) => r.role === 'admin')) {
+          setIsAdmin(true);
+        }
+      }
+    };
+
+    checkAdminRole();
+  }, [user]);
 
   const mainItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -34,6 +56,7 @@ export function AppSidebar() {
     { title: "Certificates", url: "/certificates", icon: Award },
     { title: "Materials", url: "/materials", icon: FileText },
     { title: "Profile", url: "/profile", icon: User },
+    ...(isAdmin ? [{ title: "Admin Panel", url: "/admin/dashboard", icon: Shield }] : []),
   ];
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
