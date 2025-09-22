@@ -47,15 +47,15 @@ const Login = () => {
           .from('user_roles')
           .select('role')
           .eq('user_id', signedInUser.id);
-        if (roles && roles.length > 0) {
+        if (rolesData && rolesData.length > 0) {
           // Data received from DB
           toast({
             title: "Login Success",
-            description: `Roles: ${roles.map(r => r.role).join(", ")}`,
+            description: `Roles: ${rolesData.map(r => r.role).join(", ")}`,
             variant: "default",
           });
           // Redirect based on role
-          if (roles.some((r: any) => r.role === 'admin')) {
+          if (rolesData.some((r: any) => r.role === 'admin')) {
             navigate('/admin/dashboard');
           } else {
             navigate('/dashboard');
