@@ -56,7 +56,6 @@ export function AppSidebar() {
     { title: "Certificates", url: "/certificates", icon: Award },
     { title: "Materials", url: "/materials", icon: FileText },
     { title: "Profile", url: "/profile", icon: User },
-    ...(isAdmin ? [{ title: "Admin Panel", url: "/admin/dashboard", icon: Shield }] : []),
   ];
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -90,6 +89,16 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {isAdmin && (
+                <SidebarMenuItem key="Admin Panel">
+                  <SidebarMenuButton asChild className="w-full">
+                    <NavLink to="/admin" className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${getNavCls({ isActive: currentPath.startsWith('/admin') })}`}>
+                      <Shield className="h-4 w-4" />
+                      {state !== "collapsed" && <span>Admin Panel</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
