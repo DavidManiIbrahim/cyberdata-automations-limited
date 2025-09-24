@@ -1,0 +1,87 @@
+# App Folder & Component Structure
+
+Root
+├── public/
+│   └── robots.txt
+├── src/
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   ├── main.tsx
+│   ├── vite-env.d.ts
+│   ├── assets/
+│   ├── components/
+│   │   ├── AppSidebar.tsx
+│   │   ├── CourseEnrollment.tsx
+│   │   ├── DashboardLayout.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   ├── TopNavigation.tsx
+│   │   └── ui/
+│   │       ├── accordion.tsx
+│   │       ├── alert-dialog.tsx
+│   │       ├── ... (other UI components)
+│   ├── hooks/
+│   │   ├── use-mobile.tsx
+│   │   ├── use-toast.ts
+│   │   └── useAuth.tsx
+│   ├── integrations/
+│   │   └── supabase/
+│   │       ├── client.ts
+│   │       └── types.ts
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── pages/
+│   │   ├── About.tsx
+│   │   ├── AdminAnalytics.tsx
+│   │   ├── AdminCertificates.tsx
+│   │   ├── AdminDashboard.tsx
+│   │   ├── AdminPage.tsx
+│   │   ├── AdminUsers.tsx
+│   │   ├── Certificates.tsx
+│   │   ├── Contact.tsx
+│   │   ├── CourseEnrollment.tsx
+│   │   ├── Courses.tsx
+│   │   ├── Dashboard.tsx
+│   │   ├── Enroll.tsx
+│   │   ├── HomeRoute.tsx
+│   │   ├── Index.tsx
+│   │   ├── Login.tsx
+│   │   ├── Materials.tsx
+│   │   ├── NotFound.tsx
+│   │   ├── Profile.new.tsx
+│   │   ├── Profile.tsx
+│   │   └── ViewCourses.tsx
+├── bun.lockb
+├── components.json
+├── eslint.config.js
+├── index.html
+├── package.json
+├── postcss.config.js
+├── README.md
+├── tailwind.config.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+└── supabase/
+    ├── config.toml
+    └── migrations/
+        ├── 20250803210453-.sql
+        ├── 20250821233155_a9001df9-0888-46b4-a455-6101cf125221.sql
+        ├── 20250821233216_ba583ca3-187a-49b4-9f71-47d3ff0de1b5.sql
+        └── 20250821234101_b78e7563-6883-4b81-a66a-c69937beb90a.sql
+
+# Main Navigation (from AppSidebar)
+- Dashboard (/dashboard)
+- View Courses (/view-courses)
+- Certificates (/certificates)
+- Materials (/materials)
+- Profile (/profile)
+- (Admin Panel if admin)
+
+# Admin Page Routes
+- /admin/dashboard
+- /admin/users
+- /admin/certificates
+- /admin/analytics

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import Index from "./pages/Index";
@@ -21,6 +21,8 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import NotFound from "./pages/NotFound";
 import ViewCourses from "./pages/ViewCourses";
 import HomeRoute from "./pages/HomeRoute";
+import AdminPage from "./pages/AdminPage";
+/*...*/
 import Materials from "./pages/Materials";
 
 const queryClient = new QueryClient();
@@ -64,10 +66,13 @@ const App = () => (
             </Route>
 
             {/* Admin Routes */}
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path="/admin/certificates" element={<AdminCertificates />} />
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin" element={<AdminPage />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="certificates" element={<AdminCertificates />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
