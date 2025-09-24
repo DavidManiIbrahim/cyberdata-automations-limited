@@ -50,13 +50,23 @@ export function AppSidebar() {
     checkAdminRole();
   }, [user]);
 
-  const mainItems = [
+  const userItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "View Courses", url: "/view-courses", icon: BookOpen },
     { title: "Certificates", url: "/certificates", icon: Award },
     { title: "Materials", url: "/materials", icon: FileText },
     { title: "Profile", url: "/profile", icon: User },
   ];
+
+  const adminItems = [
+    { title: "Admin Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
+    { title: "Manage Users", url: "/admin/users", icon: User },
+    { title: "Manage Certificates", url: "/admin/certificates", icon: Award },
+    { title: "Analytics", url: "/admin/analytics", icon: FileText },
+  ];
+
+  // Choose which items to display based on role and current path
+  const mainItems = currentPath.startsWith('/admin') ? adminItems : userItems;
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
@@ -89,12 +99,19 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              
+              {/* Toggle between Admin and User view */}
               {isAdmin && (
-                <SidebarMenuItem key="Admin Panel">
+                <SidebarMenuItem key="Toggle View">
                   <SidebarMenuButton asChild className="w-full">
-                    <NavLink to="/admin" className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${getNavCls({ isActive: currentPath.startsWith('/admin') })}`}>
+                    <NavLink 
+                      to={currentPath.startsWith('/admin') ? '/dashboard' : '/admin'} 
+                      className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${getNavCls({ isActive: false })}`}
+                    >
                       <Shield className="h-4 w-4" />
-                      {state !== "collapsed" && <span>Admin Panel</span>}
+                      {state !== "collapsed" && (
+                        <span>{currentPath.startsWith('/admin') ? 'Switch to User View' : 'Switch to Admin View'}</span>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
